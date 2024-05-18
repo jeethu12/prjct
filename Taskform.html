@@ -1,0 +1,63 @@
+Taskform.vue
+<template>
+  <v-form @submit.prevent="submitForm">
+    <v-text-field v-model="task.name" label="Task Name" required></v-text-field>
+    <v-select v-model="task.status" :items="statuses" label="Status" required></v-select>
+    <v-btn type="submit">{{ isEditing ? 'Update' : 'Add' }} Task</v-btn>
+  </v-form>
+</template>
+
+<script>
+export default {
+  name: 'TaskForm',
+  props: {
+    taskToEdit: Object,
+  },
+  data() {
+    return {
+      task: {
+        name: '',
+        status: '',
+        createdAt: '',
+        updatedAt: '',
+      },
+      statuses: ['Pending', 'In Progress', 'Completed'],
+      isEditing: false,
+    };
+  },
+  watch: {
+    taskToEdit: {
+      immediate: true,
+      handler(task) {
+        if (task) {
+          this.task = { ...task };
+          this.isEditing = true;
+        } else {
+          this.resetForm();
+        }
+      },
+    },
+  },
+  methods: {
+    submitForm() {
+      this.task.updatedAt = new Date().toISOString();
+      if (this.isEditing) {
+        this.$emit('update-task', this.task);
+      } else {
+        this.task.createdAt = new Date().toISOString();
+        this.$emit('add-task', this.task);
+      }
+      this.resetForm();
+    },
+    resetForm() {
+      this.task = {
+        name: '',
+        status: '',
+        createdAt: '',
+        updatedAt: '',
+      };
+      this.isEditing = false;
+    },
+  },
+};
+</script>

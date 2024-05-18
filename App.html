@@ -1,0 +1,47 @@
+App.html
+<template>
+  <v-app>
+    <v-container>
+      <task-form
+        :task-to-edit="taskToEdit"
+        @add-task="addTask"
+        @update-task="updateTask"
+      ></task-form>
+      <v-select v-model="statusFilter" :items="statuses" label="Filter by Status"></v-select>
+      <task-list :tasks="filteredTasks" @edit-task="editTask"></task-list>
+    </v-container>
+  </v-app>
+</template>
+
+<script>
+import TaskForm from './components/TaskForm.vue';
+import TaskList from './components/TaskList.vue';
+import { mapActions, mapGetters } from 'vuex';
+
+export default {
+  name: 'App',
+  components: {
+    TaskForm,
+    TaskList,
+  },
+  data() {
+    return {
+      taskToEdit: null,
+      statusFilter: '',
+      statuses: ['All', 'Pending', 'In Progress', 'Completed'],
+    };
+  },
+  computed: {
+    ...mapGetters(['filteredTasks']),
+  },
+  methods: {
+    ...mapActions(['fetchTasks', 'addTask', 'updateTask']),
+    editTask(task) {
+      this.taskToEdit = task;
+    },
+  },
+  created() {
+    this.fetchTasks();
+  },
+};
+</script>

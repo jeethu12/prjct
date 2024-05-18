@@ -1,0 +1,36 @@
+TaskList.vue
+<template>
+  <v-container>
+    <v-row>
+      <v-col cols="12" sm="6" md="4" v-for="task in tasks" :key="task.id">
+        <v-card>
+          <v-card-title>{{ task.name }}</v-card-title>
+          <v-card-subtitle>Status: {{ task.status }}</v-card-subtitle>
+          <v-card-subtitle>Created At: {{ task.createdAt }}</v-card-subtitle>
+          <v-card-subtitle>Updated At: {{ task.updatedAt }}</v-card-subtitle>
+          <v-card-actions>
+            <v-btn @click="editTask(task)">Edit</v-btn>
+            <v-btn @click="deleteTask(task.id)">Delete</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import { mapActions, mapState } from 'vuex';
+
+export default {
+  name: 'TaskList',
+  computed: {
+    ...mapState(['tasks']),
+  },
+  methods: {
+    ...mapActions(['deleteTask']),
+    editTask(task) {
+      this.$emit('edit-task', task);
+    },
+  },
+};
+</script>
